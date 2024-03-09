@@ -1,0 +1,64 @@
+package analizadorproyecto;
+
+import java_cup.runtime.Symbol;
+
+parser code
+{:
+    private Symbol s;
+    public void syntax_error(Symbol s){
+    this.s = s;
+}
+    public Symbol getS(){
+    return this.s;
+}
+:};
+
+terminal Int,Boolean,String,Float,Error, If, Else, While, Igual, Parentesis_abierta,
+Parentesis_cerrada,LlaveAbierta,LlaveCerrada,Main,P_coma,Coma,Do,For,Identificador,Public,Private,Protected,Void,Switch,Numero,Op_logico,Op_relacional,Op_aritmeticos,Op_booleano,Op_incremento,Op_atribucion;
+
+non terminal INICIO, SENTENCIA, DECLARACION, SENTENCIA_BOOLEANA, IF, EXPRESION, CICLO,IF_ELSE, SENTENCIA_FOR, DECLARACION_FOR,EXPRESION_COMPLETA;
+
+start with INICIO;
+
+INICIO ::= Public Void Parentesis_abierta Parentesis_cerrada LlaveAbierta SENTENCIA LlaveCerrada;
+
+SENTENCIA::= SENTENCIA DECLARACION | DECLARACION | EXPRESION | EXPRESION_COMPLETA |
+              SENTENCIA IF | IF | SENTENCIA IF_ELSE | IF_ELSE |
+              SENTENCIA CICLO | CICLO |
+              SENTENCIA_BOOLEANA;
+    
+EXPRESION ::=  Identificador Op_aritmeticos Identificador  | Numero Op_aritmeticos Numero |Numero Op_aritmeticos Numero Op_aritmeticos Numero 
+              | Numero Op_aritmeticos Numero Op_aritmeticos Numero Op_aritmeticos Numero
+              | Identificador  MASEXPRESION |
+                Identificador Op_aritmeticos Numero Op_aritmeticos Numero |
+                Identificador Op_aritmeticos Identificador Op_aritmeticos Identificador Op_aritmeticos Identificador ;
+MASEXPRESION ::=  Op_aritmeticos Identificador MASEXPRESION  ;
+EXPRESION_COMPLETA ::= SENTENCIA EXPRESION P_coma;
+
+DECLARACION ::= Identificador Igual |
+    Int Identificador P_coma |Int Identificador Igual Numero P_coma | Int Identificador Igual Numero Op_aritmeticos Numero P_coma | Int Identificador Op_aritmeticos Numero Op_aritmeticos Numero P_coma| 
+    Float Identificador P_coma |  Float Identificador Igual Numero P_coma | Float Identificador Igual Numero Op_aritmeticos Numero P_coma|
+    String Identificador P_coma | String Identificador Igual Identificador P_coma |  String Identificador Igual Identificador Op_aritmeticos Identificador P_coma |
+    Boolean Identificador P_coma | Boolean Identificador Igual Op_booleano P_coma;
+
+SENTENCIA_BOOLEANA ::= 
+                    Op_booleano | Op_relacional |
+                   Identificador Op_relacional Op_booleano 
+                  | Identificador Op_relacional Numero 
+                  | Identificador Op_relacional Identificador;
+ 
+SENTENCIA_FOR ::= SENTENCIA_BOOLEANA P_coma Identificador Op_incremento
+              | DECLARACION P_coma SENTENCIA_BOOLEANA P_coma Identificador Op_incremento | Identificador Op_incremento | EXPRESION;
+DECLARACION_FOR ::= 
+     Int Identificador Igual Numero P_coma |
+    Int Identificador Op_incremento P_coma | 
+    Op_incremento Identificador P_coma
+;
+
+IF ::= If Parentesis_abierta SENTENCIA_BOOLEANA Parentesis_cerrada LlaveAbierta SENTENCIA LlaveCerrada;
+
+IF_ELSE ::= If Parentesis_abierta SENTENCIA_BOOLEANA Parentesis_cerrada LlaveAbierta SENTENCIA LlaveCerrada Else LlaveAbierta SENTENCIA LlaveCerrada;
+
+CICLO ::= For Parentesis_abierta DECLARACION_FOR  SENTENCIA_FOR  Parentesis_cerrada LlaveAbierta SENTENCIA LlaveCerrada
+        | While Parentesis_abierta SENTENCIA_BOOLEANA Parentesis_cerrada LlaveAbierta SENTENCIA LlaveCerrada 
+        | Do LlaveAbierta SENTENCIA LlaveCerrada While Parentesis_abierta SENTENCIA_BOOLEANA Parentesis_cerrada LlaveAbierta SENTENCIA LlaveCerrada;

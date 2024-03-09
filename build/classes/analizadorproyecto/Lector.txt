@@ -1,0 +1,19 @@
+public void(){
+int a;
+float b;
+string c = asdas;
+for(int i = 0; i < 2; i++){
+int b = 3;
+} 
+do{
+boolean a = false;
+} while(a == false){
+int c = 5;
+a = b+2^2;
+}
+if(true){
+    string a = hola;
+} else {
+    string a = adios;
+}
+}
